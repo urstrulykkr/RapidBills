@@ -7,6 +7,8 @@ import EditableTextarea from './EditableTextarea'
 import EditableCalendarInput from './EditableCalendarInput'
 import EditableFileImage from './EditableFileImage'
 import countryList from '../data/countryList'
+import invoiceTypes from '../data/invoiceTypes'
+import currencyList from '../data/currencyList'
 import Document from './Document'
 import Page from './Page'
 import View from './View'
@@ -130,6 +132,18 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
     setSaleTax(saleTax)
   }, [subTotal, invoice.taxLabel])
 
+
+  function getCurrencySymbol(countryName: string) {
+    const currency = currencyList.find(item => item.value === countryName);
+    return currency ? currency.text : "";
+  }
+  
+  // Example usage
+  const countryName = "United States";
+  const currencySymbol = getCurrencySymbol(countryName);
+  console.log(currencySymbol); // Output: $
+  
+
   useEffect(() => {
     if (onChange) {
       onChange(invoice)
@@ -185,7 +199,8 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
             />
           </View>
           <View className="w-50" pdfMode={pdfMode}>
-            <EditableInput
+            <EditableSelect
+              options={invoiceTypes}
               className="fs-45 right bold"
               placeholder="Invoice"
               value={invoice.title}
@@ -200,7 +215,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
             <EditableInput
               className="bold dark mb-5"
               value={invoice.billTo}
-              onChange={(value) => handleChange('billTo', value)}
               pdfMode={pdfMode}
             />
             <EditableInput
@@ -234,13 +248,12 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
                 <EditableInput
                   className="bold"
                   value={invoice.invoiceTitleLabel}
-                  onChange={(value) => handleChange('invoiceTitleLabel', value)}
                   pdfMode={pdfMode}
                 />
               </View>
               <View className="w-60" pdfMode={pdfMode}>
                 <EditableInput
-                  placeholder="INV-12"
+                  placeholder="INV-XX"
                   value={invoice.invoiceTitle}
                   onChange={(value) => handleChange('invoiceTitle', value)}
                   pdfMode={pdfMode}
@@ -252,7 +265,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
                 <EditableInput
                   className="bold"
                   value={invoice.invoiceDateLabel}
-                  onChange={(value) => handleChange('invoiceDateLabel', value)}
                   pdfMode={pdfMode}
                 />
               </View>
@@ -275,7 +287,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
                 <EditableInput
                   className="bold"
                   value={invoice.invoiceDueDateLabel}
-                  onChange={(value) => handleChange('invoiceDueDateLabel', value)}
                   pdfMode={pdfMode}
                 />
               </View>
@@ -301,7 +312,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
             <EditableInput
               className="white bold"
               value={invoice.productLineDescription}
-              onChange={(value) => handleChange('productLineDescription', value)}
               pdfMode={pdfMode}
             />
           </View>
@@ -309,7 +319,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
             <EditableInput
               className="white bold right"
               value={invoice.productLineQuantity}
-              onChange={(value) => handleChange('productLineQuantity', value)}
               pdfMode={pdfMode}
             />
           </View>
@@ -317,7 +326,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
             <EditableInput
               className="white bold right"
               value={invoice.productLineQuantityRate}
-              onChange={(value) => handleChange('productLineQuantityRate', value)}
               pdfMode={pdfMode}
             />
           </View>
@@ -325,7 +333,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
             <EditableInput
               className="white bold right"
               value={invoice.productLineQuantityAmount}
-              onChange={(value) => handleChange('productLineQuantityAmount', value)}
               pdfMode={pdfMode}
             />
           </View>
@@ -429,9 +436,10 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
                 />
               </View>
               <View className="w-50 p-5 flex" pdfMode={pdfMode}>
-                <EditableInput
+                <EditableSelect
+                  options={currencyList}
                   className="dark bold right ml-30"
-                  value={invoice.currency}
+                  value={getCurrencySymbol(invoice.clientCountry)}
                   onChange={(value) => handleChange('currency', value)}
                   pdfMode={pdfMode}
                 />
@@ -450,7 +458,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
           <EditableInput
             className="bold w-100"
             value={invoice.notesLabel}
-            onChange={(value) => handleChange('notesLabel', value)}
             pdfMode={pdfMode}
           />
           <EditableTextarea
@@ -465,7 +472,6 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange }) => {
           <EditableInput
             className="bold w-100"
             value={invoice.termLabel}
-            onChange={(value) => handleChange('termLabel', value)}
             pdfMode={pdfMode}
           />
           <EditableTextarea
